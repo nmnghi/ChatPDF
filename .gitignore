@@ -1,4 +1,5 @@
-.env
-uploads
-node_modules
 __pycache__
+uploads
+.env
+training.csv
+node_modules
