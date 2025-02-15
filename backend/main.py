@@ -10,7 +10,6 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_experimental.text_splitter import SemanticChunker
 
-
 load_dotenv()
 
 app = FastAPI()
