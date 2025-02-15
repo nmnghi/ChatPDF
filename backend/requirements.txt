@@ -2,6 +2,8 @@ pymupdf
 pandas
 fastapi
 faiss-cpu
+uvicorn
+python-multipart
 langchain_community
 langchain_openai
 langchain_core
