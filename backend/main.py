@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv 
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Depends
+from fastapi import FastAPI, File, UploadFile, Form, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
@@ -45,7 +45,7 @@ def upload_pdf(file: UploadFile = File(...)):
     return {"message": "File uploaded and processed successfully"}
 
 rag_template = """
-Use only the following context to answer the user's query in a well-formatted, concise, and clear manner paragraph. If you don't have an answer, respond "Tài liệu pdf mà bạn cung cấp không có thông tin cho câu hỏi của bạn!".
+Use only the following context to answer the user's query in a well-formatted, concise and clear manner sentences. If you don't have an answer, respond "The PDF document you provided does not contain information for your question!".
 
 Câu hỏi:
 {question}
@@ -58,11 +58,9 @@ rag_prompt = ChatPromptTemplate.from_template(rag_template)
 chat_model = ChatOpenAI(model_name="gpt-4o-mini", temperature=0)
 
 def get_chat_response(text: str):
+    text = preprocess(text)
     if db_vectors:
-        chunks_query_retriever = db_vectors.as_retriever(search_kwargs={"k": 5, "score_threshold": 0.5})
-
-        docs = db_vectors.similarity_search_with_score(text, k=3)
-        save_csv(text, docs)
+        chunks_query_retriever = db_vectors.as_retriever(search_kwargs={"k": 5})
 
         semantic_rag_chain = (
             {"context": chunks_query_retriever, "question": RunnablePassthrough()}

@@ -1,5 +1,6 @@
 __pycache__
+experimental
 uploads
 .env
-training.csv
+measure.py
 node_modules

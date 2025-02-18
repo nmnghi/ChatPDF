@@ -1,9 +1,17 @@
-import os
+import re
 import fitz
-import pandas as pd
 from langchain_experimental.text_splitter import SemanticChunker
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
+
+def preprocess(text):
+    # Lower query
+    text = text.lower()
+    # Remove special characters
+    text = re.sub(r'[^\w\s]', '', text)
+    # Remove white space
+    text = text.strip()
+    return text
 
 def read_pdf_to_string(filepath):
     doc = fitz.open(filepath)
@@ -18,33 +26,13 @@ def chunking(text, embeddings):
         embeddings,
         breakpoint_threshold_type="percentile",
         breakpoint_threshold_amount= 90,
-        min_chunk_size=100
+        min_chunk_size=30
     )
     return text_splitter.create_documents([text])
 
 def encode_pdf(path):
     text = read_pdf_to_string(path)
-    embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
-    text_splitter = SemanticChunker(
-        embeddings,
-        breakpoint_threshold_type="percentile",
-        breakpoint_threshold_amount=90,
-        min_chunk_size=30
-    )
-    docs = text_splitter.create_documents([text])
+    embeddings = OpenAIEmbeddings()
+    docs = chunking(text, embeddings)
     vector_store = FAISS.from_documents(docs, embeddings)
     return vector_store
-
-def save_csv(query, docs, path="training.csv"):
-    data= []
-    for doc, score in docs:
-        data.append({
-            "query": query,
-            "answer": doc.page_content,
-            "score": score
-        })
-    df = pd.DataFrame(data) 
-    if os.path.exists(path):
-        df.to_csv(path, mode='a', header=False, index=False, encoding='utf-8')
-    else:
-        df.to_csv(path, index=False, encoding='utf-8')
