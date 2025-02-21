@@ -38,7 +38,8 @@ const Window = () => {
       });
 
       const data = await res.json();
-      return data.response;
+      const cleanResponse = data.response.replace(/\*\*([^*]+)\*\*/g, "$1");
+      return cleanResponse;
     } catch (error) {
       console.error("Error fetching response:", error);
     }
