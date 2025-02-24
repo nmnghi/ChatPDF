@@ -1,8 +1,14 @@
+import os
 import re
 import fitz
-from langchain_experimental.text_splitter import SemanticChunker
+import numpy as np
+from dotenv import load_dotenv
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
+from langchain_experimental.text_splitter import SemanticChunker
+
+load_dotenv()
+os.environ["OPENAI_API_KEY"] = os.getenv('OPEN_API_KEY')
 
 def preprocess(text):
     # Lower query
@@ -36,3 +42,12 @@ def encode_pdf(path):
     docs = chunking(text, embeddings)
     vector_store = FAISS.from_documents(docs, embeddings)
     return vector_store
+
+def cosine_similarity(vector1, vector2):
+    return np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2))
+
+def euclid_distance(vector1, vector2):
+    return np.linalg.norm(vector1) - np.linalg.norm(vector2)
+
+def encoding(text):
+    return OpenAIEmbeddings().embed_query(text)
