@@ -1,5 +1,7 @@
 import { useState, useRef } from 'react'
 import { assets } from '../../assets/assets'
+import Avatar from '../../assets/chatpdf_avatar.json'
+import Lottie from 'lottie-react'
 import './Window.css'
 
 const Window = () => {
@@ -134,7 +136,8 @@ const Window = () => {
             >
               {msg.type === "bot" ? (
                 <>
-                  <img src={assets.gemini_logo} alt="" className="avatar" />
+                  {/* <img src={assets.gemini_logo} alt="" className="avatar" /> */}
+                  <Lottie className="avatar" animationData={Avatar}/>
                   <p className="message-text">{msg.content || "Loading..."}</p>
                 </>
               ) : (
