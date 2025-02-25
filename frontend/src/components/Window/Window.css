@@ -40,6 +40,7 @@
     -webkit-text-fill-color: transparent;
 }
 
+
 .main :is(.greet, .suggestions) {
     display: none;
 }
@@ -140,7 +141,8 @@
 }
 
 .chats-container .message .message-text {
-    padding: 3px 16px;
+    padding: 18px 16px;
+    color: #46494c;
     word-wrap: break-word;
     white-space: pre-line;
 }
