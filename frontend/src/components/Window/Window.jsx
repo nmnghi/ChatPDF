@@ -90,7 +90,11 @@ const Window = () => {
     } catch (error) {
         console.error("Error sending message:", error);
     }
-}
+  }
+
+  const onHandleDelete = () => {
+    setInput('')
+  }
 
   return (
     <div className='main'>
@@ -176,7 +180,8 @@ const Window = () => {
                 </div>
               </div>
               <button id='theme-toggle-btn' className="material-symbols-outlined">light_mode</button>
-              <button id='delete-btn' className="material-symbols-outlined">delete</button>
+              <button id='delete-btn' className="material-symbols-outlined"
+              onClick={onHandleDelete}>delete</button>
             </div>
 
             <p className='bottom-info'>ChatPDF can make mistakes. Check important info.</p>
