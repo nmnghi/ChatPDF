@@ -3,6 +3,8 @@ pandas
 fastapi
 faiss-cpu
 uvicorn
+matplotlib
+semantic-router
 python-multipart
 langchain_community
 langchain_openai

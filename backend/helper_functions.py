@@ -9,6 +9,7 @@ from langchain_experimental.text_splitter import SemanticChunker
 
 load_dotenv()
 os.environ["OPENAI_API_KEY"] = os.getenv('OPEN_API_KEY')
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
 def preprocess(text):
     # Lower query
@@ -43,11 +44,13 @@ def encode_pdf(path):
     vector_store = FAISS.from_documents(docs, embeddings)
     return vector_store
 
+def encoding(text):
+    return OpenAIEmbeddings().embed_query(text)
+
 def cosine_similarity(vector1, vector2):
     return np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2))
 
 def euclid_distance(vector1, vector2):
-    return np.linalg.norm(vector1) - np.linalg.norm(vector2)
-
-def encoding(text):
-    return OpenAIEmbeddings().embed_query(text)
+    vector1 = np.array(vector1)
+    vector2 = np.array(vector2)
+    return np.linalg.norm(vector1 - vector2)
