@@ -113,7 +113,7 @@ const Window = () => {
     <div className='main'>
       <div className="nav">
         <p>ChatPDF</p>
-        <img src={assets.user_icon} alt="" />
+        <img src={assets.user_icon} alt="Avatar" />
       </div>
       <div className="main-container">
         <div className="greet">
