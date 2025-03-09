@@ -80,7 +80,7 @@ const SignUp = () => {
 
         <div className="auth-footer">
           <p className="auth-footer-text">
-            Already have an account? <a href="/signin" className="auth-link">Sign In</a>
+            Already have an account? <a href="/" className="auth-link">Sign In</a>
           </p>
         </div>
       </div>

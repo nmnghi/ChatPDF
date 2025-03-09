@@ -14,6 +14,7 @@
     font-size: 22px;
     padding: 20px;
     color: #585858;
+    font-weight: 500;
 }
 
 .nav img {
@@ -29,13 +30,13 @@
 .greet {
     margin: 50px 0;
     font-size: 56px;
-    color: #ced4da;
+    color: #E9EDF1;
     font-weight: 500;
     padding: 20px;
 }
 
 .greet span {
-    background: linear-gradient(16deg, #4b90ff, #ff5546);
+    background: linear-gradient(16deg, #80A8FF, #ADFAFF);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -63,14 +64,13 @@
     align-items: flex-end;
     justify-content: space-between;
     border-radius: 12px;
-    /* background-color: #f0f4f9; */
-    background-color: #e9ecef;
+    background-color: #F3F5F8;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .suggestion-item:hover {
-    background-color: #dee2e6;
+    background-color: #E3E9EE;
 }
 
 .suggestion-item span {
@@ -81,7 +81,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background-color: #fff;
+    background-color: #FFF;
 }
 
 .suggestion-item p {
@@ -118,8 +118,8 @@
     align-self: flex-start;
     margin-right: -5px;
     border-radius: 50%;
-    background-color: #f0f4f9;
-    border: 1px solid #dfe4ea;
+    background-color: #F9FBFE;
+    border: 1px solid #E5EAF1;
 }
 
  /* .avatar {
@@ -161,7 +161,7 @@
     padding: 12px 16px;
     max-width: 75%;
     border-radius: 13px 13px 13px 13px;
-    background-color: #e9ecef;
+    background-color: #F3F5F8;
 }
 
 /* prompt styling */
@@ -185,7 +185,7 @@
 }
 
 .prompt-search #send-btn {
-    color: #fff;
+    color: #FFF;
     display: none;
     background: #1d7efd;
 }
@@ -200,7 +200,7 @@
 
 .prompt-search {
     flex: 1;
-    background: #e9ecef;
+    background: #F3F5F8;
     border-radius: 25px;
     padding: 5px 10px;
 }
@@ -213,7 +213,7 @@ button,
     width: 40px;
     height: 40px;
     border: none; 
-    background-color: #dee2e6;
+    background-color: #E3E9EE;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -227,7 +227,7 @@ button:hover,
 #delete-btn:hover,
 #send-btn:hover,
 #add-file-btn:hover {
-    background-color: #adb5bd;
+    background-color: #CDD4DC;
 }
 
 .prompt-input {
