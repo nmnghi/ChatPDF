@@ -110,26 +110,26 @@
     align-items: center;  
 }
 
-/* .chats-container .bot-message .avatar {
+.chats-container .bot-message .avatar {
     height: 43px;
     width: 43px;
     flex-shrink: 0;
-    padding: 6px;
+    padding: 4px;
     align-self: flex-start;
-    margin-right: -7px;
+    margin-right: -5px;
     border-radius: 50%;
     background-color: #f0f4f9;
     border: 1px solid #dfe4ea;
-} */
+}
 
- .avatar {
+ /* .avatar {
     height: 68px;
     width: 68px;
     flex-shrink: 0;
     align-self: flex-start;
     margin-right: -17px;
     border-radius: 50%;
-}
+} */
 
 .chats-container .bot-message.loading .avatar {
     animation: rotate 3s linear infinite;

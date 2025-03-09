@@ -1,5 +1,5 @@
-import SignIn from "./SignIn"
-import SignUp from "./SignUp"
+import SignIn from './components/SignIn_SignUp/SignIn'
+import SignUp from './components/SignIn_SignUp/SignUp'
 import Home from "./Home"
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
