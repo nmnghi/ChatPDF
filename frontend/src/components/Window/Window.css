@@ -228,6 +228,7 @@ button:hover,
 #send-btn:hover,
 #add-file-btn:hover {
     background-color: #CDD4DC;
+    transform: scale(1.1);
 }
 
 .prompt-input {
