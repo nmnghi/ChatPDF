@@ -29,7 +29,7 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 @app.post("/response")
-def response(msg: str = Form(...), top_k: int = Form(...)):
+def response(msg: str = Form(...), top_k: int = 3):
     return {"response": get_chat_response(msg, top_k)}
 
 @app.post("/upload")
@@ -96,7 +96,6 @@ routes = [
 ]
 
 rl = RouteLayer(encoder=OpenAIEncoder(), routes=routes)
-db_vectors = encode_pdf("uploads/DSDM.pdf")
 
 def get_chat_response(text: str, top_k: int):
     text = preprocess(text)
@@ -121,4 +120,4 @@ def get_chat_response(text: str, top_k: int):
         return semantic_rag_chain.invoke({"context": answer, "question": text})
     
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="localhost", port=8000)

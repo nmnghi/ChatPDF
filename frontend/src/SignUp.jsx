@@ -1,7 +1,8 @@
 import './Auth.css';
 import React, { useState } from 'react';
-import { auth } from '../firebase.config';
+import { auth, db } from '../firebase.config'
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
@@ -11,10 +12,18 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try { 
-      await createUserWithEmailAndPassword(auth, email, password);
-        alert('Sign up successfully');
-        navigate('/home');
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      // Create user document in Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        gmail: email,
+        chats: []
+      });
+
+      alert('Sign up successfully');
+      navigate('/home');
     } catch (error) {
       console.error('Sign up error:', error);
     }
