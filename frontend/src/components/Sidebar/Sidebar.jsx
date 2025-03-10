@@ -95,11 +95,15 @@ function Sidebar({ updateChatHistory, updateCurrentThread }) {
           <p className="recent-title">Recent</p>
           {threads.map((thread, index) => (
               <div key={index} className="recent-entry" onClick={() => handleThreadClick(thread.threadId)}>
-                <img src={assets.message_icon} alt="" />
-                <p>{thread.threadTitle}</p>
-                <button onClick={() => handleDeleteThread(thread.threadId)}>
-                  <img src={assets.trash_icon} alt="" />
-                </button>
+                <div>
+                  <p>{thread.threadTitle}</p>
+                </div>
+                <div onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteThread(thread.threadId);
+                }}>
+                  <img src={assets.trash_icon} alt=""/>
+                </div>
               </div>
             ))}
         </div>

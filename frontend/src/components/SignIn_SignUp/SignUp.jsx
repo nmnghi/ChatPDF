@@ -1,7 +1,8 @@
 import './Auth.css';
 import React, { useState } from 'react';
-import { auth } from '../../../firebase.config';
+import { auth, db } from '../../../firebase.config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import bg from '../../assets/bg.png';
 
@@ -20,8 +21,13 @@ const SignUp = () => {
       return;
     }
 
-    try { 
-      await createUserWithEmailAndPassword(auth, email, password);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      await setDoc(doc(db, 'users', user.uid), {
+        gmail: email,
+        chats: []
+      });
       alert('Sign up successfully');
       navigate('/home');
     } catch (error) {
