@@ -3,7 +3,7 @@
     display: inline-flex;
     flex-direction: column;
     justify-content: space-between;
-    background-color: #e9ecef;
+    background-color: #F3F5F8;
     padding: 25px 15px;
 }
 
@@ -23,7 +23,7 @@
     align-items: center;
     gap: 10px;
     padding: 10px 15px;
-    background-color: #dee2e6;
+    background-color: #E3E9EE;
     border-radius: 50px;
     font-size: 14px;
     color: black;
@@ -45,15 +45,26 @@
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    padding: 10px;
-    padding-right: 40px;
-    border-radius: 50px;
+    padding: 12px; /* Tăng padding để mở rộng */
+    width: 50px; /* Tạo hình vuông giúp hover tròn hơn */
+    height: 50px; /* Đảm bảo chiều cao và rộng bằng nhau */
+    border-radius: 50%; /* Làm cho phần tử tròn hoàn toàn */
     color: #282828;
     cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .sidebar .recent-entry:hover {
-    background-color: #ced4da;
+    background-color: #E3E9EE;
+    transform: scale(1.1);
+}
+
+/* Căn chỉnh icon và chữ */
+.sidebar .recent-entry img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    margin-left: -2px;
 }
 
 .sidebar .bottom {
