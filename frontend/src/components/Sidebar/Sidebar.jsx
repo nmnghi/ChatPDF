@@ -1,11 +1,14 @@
 import {doc, updateDoc, arrayUnion, getDoc, collection, addDoc, onSnapshot, deleteDoc} from 'firebase/firestore'
 import { auth, db } from '../../../firebase.config';
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {assets} from '../../assets/assets'
 import './Sidebar.css'
+import { Form } from 'react-router-dom';
 
-function Sidebar({ updateChatHistory, updateCurrentThread }) {
+const Sidebar = ({ updateChatHistory, updateCurrentThread }) => {
   const [threads, setThreads] = useState([]);
+  const fileInputRef = useRef(null);
+  const currentThreadRef = useRef(null);
 
   useEffect(() => {
     const fetchThreads = () => {
@@ -36,15 +39,14 @@ function Sidebar({ updateChatHistory, updateCurrentThread }) {
         contents: [],
         timestamp: Date.now()
       });
-      
+
       await updateDoc(userRef, {
         chats: arrayUnion({
           threadId: threadRef.id,
-          threadTitle: 'New chat', 
+          threadTitle: "New Chat", 
         })
       });
-    } else {
-      alert('You must log in to use this feature.');
+      handleThreadClick(threadRef.id);
     }
   };
 
@@ -62,7 +64,6 @@ function Sidebar({ updateChatHistory, updateCurrentThread }) {
     try {
       const threadRef = doc(db, 'threads', threadId);
       await deleteDoc(threadRef);
-      console.log('Thread deleted successfully from threads collection');
 
       const user = auth.currentUser;
       if (user) {
@@ -77,6 +78,7 @@ function Sidebar({ updateChatHistory, updateCurrentThread }) {
           console.log('Thread reference deleted successfully from users collection');
           
           updateChatHistory([]);
+          updateCurrentThread(null);
         }
       }
     } catch (error) {
@@ -95,8 +97,8 @@ function Sidebar({ updateChatHistory, updateCurrentThread }) {
           <p className="recent-title">Recent</p>
           {threads.map((thread, index) => (
               <div key={index} className="recent-entry" onClick={() => handleThreadClick(thread.threadId)}>
-                <div>
-                  <p>{thread.threadTitle}</p>
+                <div className="thread-title">
+                  <p title={thread.threadTitle}>{thread.threadTitle}</p>
                 </div>
                 <div onClick={(e) => {
                   e.stopPropagation();
@@ -126,6 +128,6 @@ function Sidebar({ updateChatHistory, updateCurrentThread }) {
       </div>
     </div>
   )
-}
+};
 
 export default Sidebar

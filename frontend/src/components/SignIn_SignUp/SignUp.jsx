@@ -45,7 +45,7 @@ const SignUp = () => {
       <div className="auth-form-container">
         <h1 className="auth-title">Create Account</h1>
         
-        <form className="auth-form" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <p className="auth-subtext">Join us today! Enter your details below.</p>
 
           <div className="w-full flex flex-col">

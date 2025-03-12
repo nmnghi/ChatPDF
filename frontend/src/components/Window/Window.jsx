@@ -1,7 +1,7 @@
+import { useState, useRef, useEffect } from 'react';
 import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../../firebase.config';
+import { auth, db } from '../../../firebase.config';
 import { assets } from '../../assets/assets';
-import { useState, useRef } from 'react';
 import Avatar from '../../assets/chatpdf_avatar.json';
 import Sidebar from '../Sidebar/Sidebar';
 import Lottie from 'lottie-react';
@@ -13,6 +13,47 @@ const Window = () => {
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
   const [currentThread, setCurrentThread] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [currentPdfName, setCurrentPdfName] = useState(null);
+  const [showPdfList, setShowPdfList] = useState(false);
+  const [userPdfs, setUserPdfs] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUserId(user.uid);
+      }
+    });
+    
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const loadPDFTitle = async () => {
+      if (currentThread) {
+        try {
+          const pdfInfoFormData = new FormData();
+          pdfInfoFormData.append("thread_id", currentThread);
+          
+          const pdfInfoResponse = await fetch("http://127.0.0.1:8000/pdf_info", {
+            method: "POST",
+            body: pdfInfoFormData,
+          });
+          
+          const pdfInfo = await pdfInfoResponse.json();
+          if (pdfInfo.filename) {
+            setCurrentPdfName(pdfInfo.filename);
+          } else {
+            setCurrentPdfName(null);
+          }
+        } catch (error) {
+          console.error("Error loading document for thread:", error);
+        }
+      }
+    };
+    
+    loadPDFTitle();
+  }, [currentThread]);
 
   const createMsgElement = (content, type) => ({
     id: Date.now(),
@@ -20,19 +61,7 @@ const Window = () => {
     content
   });
 
-  const handleButtonClick = () => {
-    fileInputRef.current.click();
-  };
-
-  const handleFileChange = async (event) => {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      await uploadFile(selectedFile);
-    }
-  };
-
-  const typingEffect = (text, delay) => {
+  function typingEffect(text, delay) {
     return new Promise((resolve) => {
       let index = 0;
       let typingMessage = "";
@@ -54,12 +83,18 @@ const Window = () => {
         });
       }, delay);
     });
-  };
+  }
 
-  const sendMessage = async () => {
+  async function sendMessage() {
     try {
+      if (!currentThread) {
+        return "Please select or create a conversation first.";
+      }
+      
       const formData = new FormData();
       formData.append("msg", input);
+      formData.append("thread_id", currentThread);
+      
       const res = await fetch("http://127.0.0.1:8000/response", {
         method: "POST",
         body: formData,
@@ -68,31 +103,19 @@ const Window = () => {
       return data.response.replace(/\*\*([^*]+)\*\*/g, "$1");
     } catch (error) {
       console.error("Error fetching response:", error);
+      return "Sorry, I encountered an error processing your request.";
     }
-  };
+  }
 
-  const uploadFile = async (file) => {
-    if (!file) return;
-
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await fetch("http://127.0.0.1:8000/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      alert(data.message);
-    } catch (error) {
-      console.error("Error uploading file:", error);
-      alert("Error uploading file.");
-    }
-  };
-
-  const onHandleSubmit = async (e) => {
+  async function onHandleSubmit(e) {
     e.preventDefault();
     const userMessage = input.trim();
     if (!userMessage) return;
+
+    if (!currentThread) {
+      alert("Please select or create a conversation first.");
+      return;
+    }
 
     setInput('');
     const userMsg = createMsgElement(userMessage, 'user');
@@ -102,7 +125,7 @@ const Window = () => {
       const botResponse = await sendMessage();
       if (botResponse) {
         const botMsg = createMsgElement(botResponse, 'bot');
-        typingEffect(botResponse, 30);
+        typingEffect(botResponse, 15);
         setChatHistory((prevMessages) => {
           const updatedHistory = [...prevMessages, botMsg];
           updateThreadContent(updatedHistory);
@@ -114,21 +137,71 @@ const Window = () => {
     } catch (error) {
       console.error('Error sending message:', error);
     }
-  };
+  }
 
-  const onHandleDelete = () => {
+  function handleButtonClick() {
+    fileInputRef.current.click();
+  }
+
+  async function handleFileChange(e) {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      await uploadFile(selectedFile);
+    }
+  }
+
+  async function uploadFile(file) {
+    if (!file || !currentThread || !userId) {
+      alert("Please ensure you are logged in and have selected a conversation.");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("thread_id", currentThread);
+      formData.append("user_id", userId);
+      
+      const res = await fetch("http://127.0.0.1:8000/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      
+      if (data.filename) {
+        setCurrentPdfName(data.filename);
+      }
+      
+      alert(data.message);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      alert("Error uploading file.");
+    }
+  }
+
+  function handleKeyDown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault(); 
+      onHandleSubmit(e);
+    }
+  }
+
+  function onHandleDelete() {
     setInput('');
-  };
+  }
 
-  const updateChatHistory = (newChatHistory) => {
+  function updateChatHistory(newChatHistory) {
     setChatHistory(newChatHistory);
-  };
+  }
 
-  const updateCurrentThread = (threadId) => {
+  function updateCurrentThread(threadId) {
     setCurrentThread(threadId);
-  };
+    // Clear current PDF name until we fetch the new one
+    setCurrentPdfName(null);
+  }
 
-  const updateThreadContent = async (updatedHistory) => {
+  async function updateThreadContent(updatedHistory) {
     if (!currentThread){
       console.log("No thread selected");
       return;
@@ -143,6 +216,30 @@ const Window = () => {
     } catch (e) {
       console.error("Error updating thread content:", e);
     }
+  }
+
+  const togglePdfList = async () => {
+    setShowPdfList(!showPdfList);
+    
+    if (!showPdfList && userId) {
+      try {
+        const formData = new FormData();
+        formData.append("user_id", userId);
+        
+        const response = await fetch("http://127.0.0.1:8000/user_pdfs", {
+          method: "POST",
+          body: formData,
+        });
+        
+        const data = await response.json();
+        if (data.pdfs) {
+          setUserPdfs(data.pdfs);
+        }
+      } catch (error) {
+        console.error("Error fetching user PDFs:", error);
+        setUserPdfs([]);
+      }
+    }
   };
 
   return (
@@ -152,24 +249,54 @@ const Window = () => {
       </div>
       <div className='main'>
         <div className="nav">
-          <p>ChatPDF</p>
-          <img src={assets.user_icon} alt="Avatar" />
-        </div>
-        <div className="main-container">
-          <div className="greet">
-            <p><span>Hello, Dev.</span></p>
-            <p>How can I help you today?</p>
-          </div>
-
-          <div className="suggestions">
-            {["Lorem ipsum dolor sit amet consectetur adipisicing elit", "Lorem ipsum dolor sit amet consectetur adipisicing elit", "Lorem ipsum dolor sit amet consectetur adipisicing elit", "Lorem ipsum dolor sit amet consectetur adipisicing elit"].map((suggestion, index) => (
-              <div className="suggestion-item" key={index}>
-                <p>{suggestion}</p>
-                <span className="material-symbols-outlined">lightbulb</span>
+          <div className="nav-left">
+            <p>ChatPDF</p>
+            {currentPdfName && (
+              <div className="current-pdf">
+                <span className="material-symbols-outlined">description</span>
+                <p>{currentPdfName}</p>
               </div>
-            ))}
+            )}
           </div>
+          <div className="nav-right">
+            <button 
+              className="pdf-list-btn material-symbols-outlined" 
+              onClick={togglePdfList}
+              title="My PDFs"
+            >
+              folder
+            </button>
+            <img src={assets.user_icon} alt="Avatar" />
+          </div>
+        </div>
 
+        {/* PDF List Dropdown */}
+        {showPdfList && (
+          <div className="pdf-list-dropdown">
+            <div className="pdf-list-header">
+              <h3>My PDFs</h3>
+              <button className="close-btn material-symbols-outlined" onClick={togglePdfList}>
+                close
+              </button>
+            </div>
+            <div className="pdf-list-content">
+              {userPdfs && userPdfs.length > 0 ? (
+                <ul className="pdf-list">
+                  {userPdfs.map((pdf, index) => (
+                    <li key={index} className="pdf-item">
+                      <span className="material-symbols-outlined pdf-icon">description</span>
+                      <p>{pdf.filename}</p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="no-pdfs">No PDFs uploaded yet</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div className="main-container">
           <div className="chats-container">
             {chatHistory.map((msg, index) => (
               <div key={index} className={`message ${msg.type}-message ${msg.type === "bot" ? "loading" : ""}`}>
@@ -193,7 +320,8 @@ const Window = () => {
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder='Message ChatPDF'
+                  onKeyDown={handleKeyDown}
+                  placeholder={currentPdfName ? 'Ask about this PDF' : 'Upload a PDF first'}
                   required
                 />
                 <div className='prompt-actions'>
@@ -202,11 +330,13 @@ const Window = () => {
                       id='add-file-btn'
                       className="material-symbols-outlined"
                       onClick={handleButtonClick}
+                      title={currentPdfName ? "Replace PDF" : "Upload PDF"}
                     >
                       attach_file
                     </button>
                     <input
                       type="file"
+                      accept=".pdf"
                       ref={fileInputRef}
                       style={{ display: "none" }}
                       onChange={handleFileChange}
@@ -225,7 +355,11 @@ const Window = () => {
               <button id='delete-btn' className="material-symbols-outlined" onClick={onHandleDelete}>delete</button>
             </div>
 
-            <p className='bottom-info'>ChatPDF can make mistakes. Check important info.</p>
+            <p className='bottom-info'>
+              {currentPdfName 
+                ? `Current PDF: ${currentPdfName}`
+                : "Please upload a PDF document to start chatting"}
+            </p>
           </div>
         </div>
       </div>

@@ -1,9 +1,9 @@
-import './Auth.css';
-import React, { useState } from 'react';
-import { auth } from '../../../firebase.config';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../../firebase.config';
 import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import bg from '../../assets/bg.png'
+import './Auth.css';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -30,7 +30,7 @@ const SignIn = () => {
       <div className="auth-form-container">
         <h1 className="auth-title">ChatPDF</h1>
 
-        <form className="auth-form" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className="w-full flex flex-col mb-2">
             <p className="auth-subtext">Welcome back! Please enter your details</p>
           </div>
@@ -53,10 +53,6 @@ const SignIn = () => {
               onChange={(e) => setPassword(e.target.value)}
               required 
             />
-          </div>
-
-          <div className="auth-options">
-            <p className="auth-forgot-password">Forgot Password?</p>
           </div>
 
           <div className="auth-button-container">

@@ -60,24 +60,6 @@
   outline: none;
 }
 
-.auth-options {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  margin-top: 10px;
-}
-
-.auth-forgot-password {
-  font-size: 14px;
-  color: #007bff;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.auth-forgot-password:hover {
-  color: #0056b3;
-}
-
 .auth-button-container {
   width: 100%;
   margin-top: 20px;

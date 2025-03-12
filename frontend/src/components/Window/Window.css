@@ -1,5 +1,3 @@
-/* Existing styles remain unchanged */
-
 .main {
     flex: 1;
     min-height: 100vh;
@@ -17,6 +15,139 @@
     font-weight: 500;
 }
 
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.pdf-list-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #F3F5F8;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.pdf-list-btn:hover {
+  background-color: #E3E9EE;
+}
+
+.pdf-list-dropdown {
+  position: absolute;
+  top: 70px;
+  right: 20px;
+  width: 500px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.pdf-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #E5EAF1;
+  background: #F3F5F8;
+}
+
+.pdf-list-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #46494c;
+}
+
+.pdf-list-content {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.pdf-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pdf-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #F3F5F8;
+  transition: background-color 0.2s;
+}
+
+.pdf-item:hover {
+  background-color: #F9FBFE;
+}
+
+.pdf-icon {
+  color: #1d7efd;
+}
+
+.pdf-item p {
+  margin: 0;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.no-pdfs {
+  padding: 20px;
+  text-align: center;
+  color: #969696;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #585858;
+}
+
+.close-btn:hover {
+  color: #333;
+}
+
+.current-pdf {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #F3F5F8;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    transition: transform 0.2s;
+}
+
+.current-pdf span {
+    font-size: 16px;
+    color: #1d7efd;
+}
+
+.current-pdf p {
+    max-width: 50vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: normal;
+}
+
 .nav img {
     width: 40px;
     border-radius: 50%;
@@ -28,70 +159,6 @@
     max-width: 900px;
     margin: auto;
 }
-
-.greet {
-    margin: 50px 0;
-    font-size: 56px;
-    color: #E9EDF1;
-    font-weight: 500;
-    padding: 20px;
-}
-
-.greet span {
-    background: linear-gradient(16deg, #80A8FF, #ADFAFF);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-
-.main :is(.greet, .suggestions) {
-    display: none;
-}
-
-/* suggestion styling */
-
-.suggestions {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 15px;
-    padding: 20px;
-}
-
-.suggestion-item {
-    height: 200px;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: space-between;
-    border-radius: 12px;
-    background-color: #F3F5F8;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.suggestion-item:hover {
-    background-color: #E3E9EE;
-}
-
-.suggestion-item span {
-    height: 45px;
-    width: 45px;
-    margin-top: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background-color: #FFF;
-}
-
-.suggestion-item p {
-    color: #585858;
-    font-size: 17px;
-}
-
-/* chat styling */
 
 .main .chats-container {
     display: flex;
@@ -123,15 +190,6 @@
     background-color: #F9FBFE;
     border: 1px solid #E5EAF1;
 }
-
- /* .avatar {
-    height: 68px;
-    width: 68px;
-    flex-shrink: 0;
-    align-self: flex-start;
-    margin-right: -17px;
-    border-radius: 50%;
-} */
 
 .chats-container .bot-message.loading .avatar {
     animation: rotate 3s linear infinite;
