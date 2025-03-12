@@ -1,10 +1,10 @@
-import './Auth.css';
 import React, { useState } from 'react';
-import { auth, db } from '../../../firebase.config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '../../firebase.config';
 import { setDoc, doc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
-import bg from '../../assets/bg.png';
+import bg from '../assets/bg.png';
+import './Auth.css';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
