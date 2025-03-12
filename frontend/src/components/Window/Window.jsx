@@ -61,7 +61,7 @@ const Window = () => {
     content
   });
 
-  function typingEffect(text, delay) {
+  const typingEffect = (text, delay) => {
     return new Promise((resolve) => {
       let index = 0;
       let typingMessage = "";
@@ -85,7 +85,7 @@ const Window = () => {
     });
   }
 
-  async function sendMessage() {
+  const sendMessage = async () => {
     try {
       if (!currentThread) {
         return "Please select or create a conversation first.";
@@ -107,7 +107,7 @@ const Window = () => {
     }
   }
 
-  async function onHandleSubmit(e) {
+  const onHandleSubmit = async (e) => {
     e.preventDefault();
     const userMessage = input.trim();
     if (!userMessage) return;
@@ -139,11 +139,11 @@ const Window = () => {
     }
   }
 
-  function handleButtonClick() {
+  const handleButtonClick = () => {
     fileInputRef.current.click();
   }
 
-  async function handleFileChange(e) {
+  const handleFileChange = async (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
@@ -151,7 +151,7 @@ const Window = () => {
     }
   }
 
-  async function uploadFile(file) {
+  const uploadFile = async (file) => {
     if (!file || !currentThread || !userId) {
       alert("Please ensure you are logged in and have selected a conversation.");
       return;
@@ -180,28 +180,28 @@ const Window = () => {
     }
   }
 
-  function handleKeyDown(e) {
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault(); 
       onHandleSubmit(e);
     }
   }
 
-  function onHandleDelete() {
+  const onHandleDelete = () => {
     setInput('');
   }
 
-  function updateChatHistory(newChatHistory) {
+  const updateChatHistory = (newChatHistory) => {
     setChatHistory(newChatHistory);
   }
 
-  function updateCurrentThread(threadId) {
+  const updateCurrentThread = (threadId) => {
     setCurrentThread(threadId);
     // Clear current PDF name until we fetch the new one
     setCurrentPdfName(null);
   }
 
-  async function updateThreadContent(updatedHistory) {
+  const updateThreadContent = async (updatedHistory) => {
     if (!currentThread){
       console.log("No thread selected");
       return;
@@ -321,7 +321,7 @@ const Window = () => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder={currentPdfName ? 'Ask about this PDF' : 'Upload a PDF first'}
+                  placeholder={currentPdfName ? 'Ask anything about this file' : 'Upload a PDF file first'}
                   required
                 />
                 <div className='prompt-actions'>
