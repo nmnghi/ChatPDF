@@ -6,17 +6,24 @@ import Avatar from '../../assets/chatpdf_avatar.json';
 import Sidebar from '../Sidebar/Sidebar';
 import Lottie from 'lottie-react';
 import './Window.css';
+import { Worker } from '@react-pdf-viewer/core';
+import { Viewer } from '@react-pdf-viewer/core';
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 const Window = () => {
   const [input, setInput] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [file, setFile] = useState(null);
+  const [pdf, setPdf] = useState(null);
   const fileInputRef = useRef(null);
   const [currentThread, setCurrentThread] = useState(null);
   const [userId, setUserId] = useState(null);
   const [currentPdfName, setCurrentPdfName] = useState(null);
   const [showPdfList, setShowPdfList] = useState(false);
   const [userPdfs, setUserPdfs] = useState([]);
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -143,13 +150,17 @@ const Window = () => {
     fileInputRef.current.click();
   }
 
-  const handleFileChange = async (e) => {
+  const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
-      await uploadFile(selectedFile);
+      let reader = new FileReader();
+      reader.readAsDataURL(selectedFile);
+      reader.onloadend = (e) => {
+        setPdf(e.target.result);
+      }
     }
-  }
+  };
 
   const uploadFile = async (file) => {
     if (!file || !currentThread || !userId) {
@@ -297,6 +308,11 @@ const Window = () => {
         )}
 
         <div className="main-container">
+          {/* <div className="pdf-container">
+              <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                {pdf && <Viewer fileUrl={pdf} plugins={[defaultLayoutPluginInstance]} />}
+              </Worker>
+          </div> */}
           <div className="chats-container">
             {chatHistory.map((msg, index) => (
               <div key={index} className={`message ${msg.type}-message ${msg.type === "bot" ? "loading" : ""}`}>
