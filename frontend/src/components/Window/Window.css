@@ -4,28 +4,33 @@
     padding-bottom: 15vh;
     position: relative;
 }
-
 .nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 22px;
-    padding: 20px;
-    color: #585858;
-    font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 22px;
+  padding: 15px;
+  color: #585858;
+  font-weight: 500;
+  border-bottom: 1px solid #E3E9EE;  
 }
 
 .nav-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 18px;
+  font-weight: 510;
+  margin-left: 18px;
 }
 
 .nav-right {
   display: flex;
   align-items: center;
   gap: 15px;
+  margin-right: 18px;
 }
+
 
 .pdf-list-btn {
   width: 40px;
@@ -39,6 +44,7 @@
   justify-content: center;
   transition: background-color 0.2s;
 }
+
 
 .pdf-list-btn:hover {
   background-color: #E3E9EE;
@@ -149,8 +155,8 @@
 }
 
 .nav img {
-    width: 40px;
-    border-radius: 50%;
+    width: 30px;
+    /* border-radius: 30%; */
 }
 
 .main-container {
@@ -158,6 +164,7 @@
     max-height: 70vh;
     max-width: 900px;
     margin: auto;
+    margin-top: 10px;
 }
 
 .main .chats-container {
@@ -287,8 +294,8 @@ button:hover,
 #delete-btn:hover,
 #send-btn:hover,
 #add-file-btn:hover {
-    background-color: #CDD4DC;
-    transform: scale(1.1);
+    background-color: #CDD4DA;
+    /* transform: scale(1.1); */
 }
 
 .prompt-input {

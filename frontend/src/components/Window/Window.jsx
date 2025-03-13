@@ -277,7 +277,8 @@ const Window = () => {
             >
               folder
             </button>
-            <img src={assets.user_icon} alt="Avatar" />
+            <img className='user-avatar' src={assets.user_icon} alt="Avatar" />
+            {/* <button className="user-avatar material-symbols-outlined">account_circle</button> */}
           </div>
         </div>
 
