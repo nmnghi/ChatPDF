@@ -11,6 +11,8 @@ import { Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+import TextareAutosize from 'react-textarea-autosize'
+
 
 const Window = () => {
   const [input, setInput] = useState("");
@@ -23,7 +25,7 @@ const Window = () => {
   const [currentPdfName, setCurrentPdfName] = useState(null);
   const [showPdfList, setShowPdfList] = useState(false);
   const [userPdfs, setUserPdfs] = useState([]);
-  const defaultLayoutPluginInstance = defaultLayoutPlugin();
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();    
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -68,6 +70,29 @@ const Window = () => {
     content
   });
 
+  const adjustPromptSearchHeight = () => {
+    const promptSearch = document.querySelector('.prompt-search');
+    const textarea = document.querySelector('.prompt-input');
+  
+    if (promptSearch && textarea) {
+      const newHeight = textarea.scrollHeight;
+      const maxHeight = 260;
+      const initialHeight = 130; 
+  
+      if (textarea.value.trim() === "") {
+        promptSearch.style.height = `${initialHeight}px`;
+        promptSearch.style.overflowY = 'hidden';
+      } else if (newHeight + 80 > maxHeight) {
+        promptSearch.style.height = `${maxHeight}px`;
+        promptSearch.style.overflowY = 'auto';
+      } else {
+        promptSearch.style.height = `${newHeight + 80}px`;
+        promptSearch.style.overflowY = 'hidden';
+      }
+    }
+  };
+  
+  
   const typingEffect = (text, delay) => {
     return new Promise((resolve) => {
       let index = 0;
@@ -329,47 +354,56 @@ const Window = () => {
             ))}
           </div>
 
-          <div className="prompt-container">
+          {/* <div className="prompt-container">
             <div className='prompt-wrapper'>
               <div className='prompt-search'>
-                <input
+                <TextareAutosize
                   className='prompt-input'
-                  type="text"
+                  minRows={1}
+                  maxRows={7}
                   value={input}
-                  onChange={(e) => setInput(e.target.value)}
+                  onChange={(e) => {
+                    setInput(e.target.value)
+                    adjustPromptSearchHeight()
+                  }}
                   onKeyDown={handleKeyDown}
                   placeholder={currentPdfName ? 'Ask anything about this file' : 'Upload a PDF file first'}
                   required
+                  style = {{resize: 'none'}}
                 />
                 <div className='prompt-actions'>
-                  <div>
+                  <div className="left-actions">
+                      <button id='theme-toggle-btn' className="material-symbols-outlined">light_mode</button>
+                      <button id='delete-btn' className="material-symbols-outlined" onClick={onHandleDelete}>delete</button>
+                    </div>
+                  <div className="right-actions">
+                    <div>
+                      <button
+                        id='add-file-btn'
+                        className="material-symbols-outlined"
+                        onClick={handleButtonClick}
+                        title={currentPdfName ? "Replace PDF" : "Upload PDF"}
+                      >
+                        attach_file
+                      </button>
+                      <input
+                        type="file"
+                        accept=".pdf"
+                        ref={fileInputRef}
+                        style={{ display: "none" }}
+                        onChange={handleFileChange}
+                      />
+                    </div>
                     <button
-                      id='add-file-btn'
+                      id='send-btn'
                       className="material-symbols-outlined"
-                      onClick={handleButtonClick}
-                      title={currentPdfName ? "Replace PDF" : "Upload PDF"}
+                      onClick={onHandleSubmit}
                     >
-                      attach_file
+                      send
                     </button>
-                    <input
-                      type="file"
-                      accept=".pdf"
-                      ref={fileInputRef}
-                      style={{ display: "none" }}
-                      onChange={handleFileChange}
-                    />
                   </div>
-                  <button
-                    id='send-btn'
-                    className="material-symbols-outlined"
-                    onClick={onHandleSubmit}
-                  >
-                    send
-                  </button>
                 </div>
               </div>
-              <button id='theme-toggle-btn' className="material-symbols-outlined">light_mode</button>
-              <button id='delete-btn' className="material-symbols-outlined" onClick={onHandleDelete}>delete</button>
             </div>
 
             <p className='bottom-info'>
@@ -377,6 +411,64 @@ const Window = () => {
                 ? `Current PDF: ${currentPdfName}`
                 : "Please upload a PDF document to start chatting"}
             </p>
+          </div> */}
+          <div className='prompt-container'>
+            <div className='prompt-wrapper'>
+              <div className='prompt-search'>
+                <TextareAutosize
+                  className='prompt-input'
+                  minRows={1}
+                  maxRows={7}
+                  value={input}
+                  onChange={(e) => {
+                    setInput(e.target.value)
+                    adjustPromptSearchHeight()
+                  }}
+                  // onKeyDown={handleKeyDown}
+                  placeholder={currentPdfName ? 'Ask anything about this file' : 'Upload a PDF file first'}
+                  required
+                  style={{ resize: 'none' }}
+                />
+                <div className='prompt-actions'>
+                  <div className="left-actions">
+                    <button id='theme-toggle-btn' className="material-symbols-outlined">light_mode</button>
+                    <button id='delete-btn' className="material-symbols-outlined" onClick={onHandleDelete}>delete</button>
+                  </div>
+                  <div className="right-actions">
+                    <div>
+                      <button
+                        id='add-file-btn'
+                        className="material-symbols-outlined"
+                        onClick={handleButtonClick}
+                        title={currentPdfName ? "Replace PDF" : "Upload PDF"}
+                      >
+                        attach_file
+                      </button>
+                      <input
+                        type="file"
+                        accept=".pdf"
+                        ref={fileInputRef}
+                        style={{ display: "none" }}
+                        onChange={handleFileChange}
+                      />
+                    </div>
+                    <button
+                      id='send-btn'
+                      className="material-symbols-outlined"
+                      onClick={onHandleSubmit}
+                    >
+                      send
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p className='bottom-info'>
+              {currentPdfName 
+                ? `Current PDF: ${currentPdfName}`
+                : "Please upload a PDF document to start chatting"}
+            </p> 
           </div>
         </div>
       </div>
