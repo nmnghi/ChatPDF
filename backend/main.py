@@ -41,8 +41,8 @@ def response(msg: str = Form(...), thread_id: str = Form(...), top_k: int = Form
                 )
             except Exception as e:
                 return {"response": f"Error loading previous conversation context: {str(e)}"}
-        # else:
-        #     return {"response": "Please upload a PDF document first."}
+        else:
+            return {"response": "Please upload a PDF document first."}
     
     return {"response": get_chat_response(msg, thread_id, top_k)}
 
@@ -188,11 +188,6 @@ routes = [
 ]
 
 rl = RouteLayer(encoder=OpenAIEncoder(), routes=routes)
-# db_vectors = FAISS.load_local(
-#     "vector_stores",
-#     OpenAIEmbeddings(),
-#     allow_dangerous_deserialization=True
-# )
 
 def get_chat_response(text: str, thread_id: str, top_k: int):
     text = preprocess(text)
@@ -214,8 +209,8 @@ def get_chat_response(text: str, thread_id: str, top_k: int):
         
         return "Please upload a PDF document first to summarize it."
     else:
-        # if thread_id not in active_vector_stores:
-        #     return "Please upload a PDF document first."
+        if thread_id not in active_vector_stores:
+            return "Please upload a PDF document first."
         
         vector_store = active_vector_stores[thread_id]
         chunks_query_retriever = vector_store.as_retriever(search_kwargs={"k": top_k})

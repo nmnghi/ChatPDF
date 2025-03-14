@@ -6,3 +6,4 @@ node_modules
 firebase.config.js
 .DS_store
 vector_stores
+evaluation
