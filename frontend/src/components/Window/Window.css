@@ -346,7 +346,6 @@ button:hover,
 #send-btn:hover,
 #add-file-btn:hover {
   background-color: #CDD4DA;
-  transform: scale(1.05);
 }
 
 button:active,
