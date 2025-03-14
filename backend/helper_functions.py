@@ -4,7 +4,7 @@ import fitz
 import numpy as np
 from dotenv import load_dotenv
 from langchain_openai import OpenAIEmbeddings
-from langchain_community.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS, DistanceStrategy
 from langchain_experimental.text_splitter import SemanticChunker
 
 load_dotenv()
@@ -41,7 +41,7 @@ def encode_pdf(path):
     text = read_pdf_to_string(path)
     embeddings = OpenAIEmbeddings()
     docs = chunking(text, embeddings)
-    vector_store = FAISS.from_documents(docs, embeddings)
+    vector_store = FAISS.from_documents(docs, embeddings, distance_strategy=DistanceStrategy.COSINE)
     return vector_store
 
 def encoding(text):

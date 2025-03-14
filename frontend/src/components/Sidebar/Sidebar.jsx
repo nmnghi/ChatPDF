@@ -3,12 +3,9 @@ import { auth, db } from '../../../firebase.config';
 import { useState, useEffect, useRef } from 'react'
 import {assets} from '../../assets/assets'
 import './Sidebar.css'
-import { Form } from 'react-router-dom';
 
 const Sidebar = ({ updateChatHistory, updateCurrentThread }) => {
   const [threads, setThreads] = useState([]);
-  const fileInputRef = useRef(null);
-  const currentThreadRef = useRef(null);
 
   useEffect(() => {
     const fetchThreads = () => {

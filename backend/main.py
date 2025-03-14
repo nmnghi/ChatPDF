@@ -2,7 +2,7 @@ from helper_functions import *
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
-from semantic_router.layer import Route, RouteLayer
+from semantic_router import RouteLayer, Route
 from semantic_router.encoders import OpenAIEncoder
 from fastapi import FastAPI, File, UploadFile, Form, Depends
 from fastapi.middleware.cors import CORSMiddleware
@@ -41,8 +41,8 @@ def response(msg: str = Form(...), thread_id: str = Form(...), top_k: int = Form
                 )
             except Exception as e:
                 return {"response": f"Error loading previous conversation context: {str(e)}"}
-        else:
-            return {"response": "Please upload a PDF document first."}
+        # else:
+        #     return {"response": "Please upload a PDF document first."}
     
     return {"response": get_chat_response(msg, thread_id, top_k)}
 
@@ -66,7 +66,7 @@ def upload_pdf(file: UploadFile = File(...), thread_id: str = Form(...), user_id
         save_document_metadata(thread_id, user_id, file.filename, file_path)
         
         return {
-            "message": f"File {file.filename} uploaded and processed successfully", 
+            "message": f"File {file.filename} uploaded and processed successfully.", 
             "file_path": file_path
         }
     except Exception as e:
@@ -188,6 +188,11 @@ routes = [
 ]
 
 rl = RouteLayer(encoder=OpenAIEncoder(), routes=routes)
+# db_vectors = FAISS.load_local(
+#     "vector_stores",
+#     OpenAIEmbeddings(),
+#     allow_dangerous_deserialization=True
+# )
 
 def get_chat_response(text: str, thread_id: str, top_k: int):
     text = preprocess(text)
@@ -209,8 +214,8 @@ def get_chat_response(text: str, thread_id: str, top_k: int):
         
         return "Please upload a PDF document first to summarize it."
     else:
-        if thread_id not in active_vector_stores:
-            return "Please upload a PDF document first."
+        # if thread_id not in active_vector_stores:
+        #     return "Please upload a PDF document first."
         
         vector_store = active_vector_stores[thread_id]
         chunks_query_retriever = vector_store.as_retriever(search_kwargs={"k": top_k})
