@@ -92,7 +92,6 @@ const Window = () => {
     }
   };
   
-  
   const typingEffect = (text, delay) => {
     return new Promise((resolve) => {
       let index = 0;
@@ -225,6 +224,11 @@ const Window = () => {
 
   const onHandleDelete = () => {
     setInput('');
+    const promptSearch = document.querySelector('.prompt-search');
+    if (promptSearch) {
+      promptSearch.style.height = '130px';
+      // promptSearch.style.overflowY = 'hidden';
+    }
   }
 
   const updateChatHistory = (newChatHistory) => {
