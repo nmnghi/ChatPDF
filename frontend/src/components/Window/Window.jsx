@@ -303,7 +303,6 @@ const Window = () => {
               folder
             </button>
             <img className='user-avatar' src={assets.user_icon} alt="Avatar" />
-            {/* <button className="user-avatar material-symbols-outlined">account_circle</button> */}
           </div>
         </div>
 
@@ -354,64 +353,6 @@ const Window = () => {
             ))}
           </div>
 
-          {/* <div className="prompt-container">
-            <div className='prompt-wrapper'>
-              <div className='prompt-search'>
-                <TextareAutosize
-                  className='prompt-input'
-                  minRows={1}
-                  maxRows={7}
-                  value={input}
-                  onChange={(e) => {
-                    setInput(e.target.value)
-                    adjustPromptSearchHeight()
-                  }}
-                  onKeyDown={handleKeyDown}
-                  placeholder={currentPdfName ? 'Ask anything about this file' : 'Upload a PDF file first'}
-                  required
-                  style = {{resize: 'none'}}
-                />
-                <div className='prompt-actions'>
-                  <div className="left-actions">
-                      <button id='theme-toggle-btn' className="material-symbols-outlined">light_mode</button>
-                      <button id='delete-btn' className="material-symbols-outlined" onClick={onHandleDelete}>delete</button>
-                    </div>
-                  <div className="right-actions">
-                    <div>
-                      <button
-                        id='add-file-btn'
-                        className="material-symbols-outlined"
-                        onClick={handleButtonClick}
-                        title={currentPdfName ? "Replace PDF" : "Upload PDF"}
-                      >
-                        attach_file
-                      </button>
-                      <input
-                        type="file"
-                        accept=".pdf"
-                        ref={fileInputRef}
-                        style={{ display: "none" }}
-                        onChange={handleFileChange}
-                      />
-                    </div>
-                    <button
-                      id='send-btn'
-                      className="material-symbols-outlined"
-                      onClick={onHandleSubmit}
-                    >
-                      send
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <p className='bottom-info'>
-              {currentPdfName 
-                ? `Current PDF: ${currentPdfName}`
-                : "Please upload a PDF document to start chatting"}
-            </p>
-          </div> */}
           <div className='prompt-container'>
             <div className='prompt-wrapper'>
               <div className='prompt-search'>
