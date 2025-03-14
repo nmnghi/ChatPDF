@@ -1,11 +1,14 @@
 import {doc, updateDoc, arrayUnion, getDoc, collection, addDoc, onSnapshot, deleteDoc} from 'firebase/firestore'
 import { auth, db } from '../../../firebase.config';
 import { useState, useEffect, useRef } from 'react'
-import {assets} from '../../assets/assets'
+import {assets} from '../../assets/assets';
+import { useNavigate } from 'react-router-dom';
 import './Sidebar.css'
+import { signOut } from 'firebase/auth';
 
 const Sidebar = ({ updateChatHistory, updateCurrentThread }) => {
   const [threads, setThreads] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchThreads = () => {
@@ -83,6 +86,17 @@ const Sidebar = ({ updateChatHistory, updateCurrentThread }) => {
     }
   };
 
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      console.log('User signed out');
+      alert('Sign out successfully');
+      navigate('/');
+    } catch (err) {
+      console.error('Sign out error:', err.message);
+    }
+  }
+
   return (
     <div className="sidebar">
       <div className="top">
@@ -109,21 +123,30 @@ const Sidebar = ({ updateChatHistory, updateCurrentThread }) => {
       </div>
       <div className="bottom">
         <div className="bottom-item">
-          <img src={assets.question_icon} alt="" />
+          <button id='help-btn' className="material-symbols-outlined">help</button>
           <p>Help</p>
         </div>
 
         <div className="bottom-item">
-          <img src={assets.history_icon} alt="" />
+          <button id='history-btn' className="material-symbols-outlined">history</button>
           <p>Activity</p>
         </div>
 
         <div className="bottom-item">
-          <img src={assets.setting_icon} alt="" />
+          <button id='settings-btn' className="material-symbols-outlined">settings</button>
           <p>Setting</p>
+        </div>
+
+        <hr className="divider" />
+
+        <div className="bottom-item sign-out" onClick={handleSignOut}>
+        <button id='logout-btn' className="material-symbols-outlined">logout</button>
+          <p>Sign Out</p>
         </div>
       </div>
     </div>
+
+    
   )
 };
 

@@ -77,16 +77,45 @@
     flex-direction: column;
 }
 
+
 .sidebar .bottom-item {
     display: flex;
-    flex-direction: row;
     align-items: center;
-    gap: 10px;
-    padding: 10px;
+    gap: 5px;
+    padding: 4px;
     border-radius: 50px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
+
 .sidebar .bottom-item:hover {
+    background-color: #ced4da;
+}
+
+.sidebar .divider {
+    margin: 10px 0;
+    border: none;
+    height: 1px;
+    background-color: #ddd;
+}
+
+button,
+#help-btn,
+#history-btn,
+#settings-btn,
+#logout-btn {
+    background-color: #F3F5F8;
+}
+
+.bottom-item:hover {
+    background-color: #ced4da;
+}
+
+.bottom-item:hover button,
+.bottom-item:hover #help-btn,
+.bottom-item:hover #history-btn,
+.bottom-item:hover #settings-btn,
+.bottom-item:hover #logout-btn {
     background-color: #ced4da;
 }
