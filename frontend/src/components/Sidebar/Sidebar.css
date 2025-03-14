@@ -21,7 +21,9 @@
     margin-top: 10px;
     display: inline-flex;
     align-items: center;
+    width: 150px;
     gap: 10px;
+    height: 40px;
     padding: 10px 15px;
     background-color: #E3E9EE;
     border-radius: 50px;
@@ -46,8 +48,9 @@
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    padding: 12px;
-    height: 50px;
+    padding: 22px;
+    height: 40px;
+    margin-top: 5px;
     border-radius: 30px;
     color: #282828;
     cursor: pointer;
@@ -68,8 +71,7 @@
 }
 
 .sidebar .recent-entry:hover {
-    background-color: #E3E9EE;
-    transform: scale(1.1);
+    background-color: #ced4da;
 }
 
 .sidebar .bottom {
@@ -100,11 +102,11 @@
     background-color: #ddd;
 }
 
-button,
 #help-btn,
 #history-btn,
 #settings-btn,
-#logout-btn {
+#logout-btn,
+#trash-btn {
     background-color: #F3F5F8;
 }
 
@@ -116,6 +118,11 @@ button,
 .bottom-item:hover #help-btn,
 .bottom-item:hover #history-btn,
 .bottom-item:hover #settings-btn,
-.bottom-item:hover #logout-btn {
+.bottom-item:hover #logout-btn{
     background-color: #ced4da;
 }
+
+.recent-entry:hover #trash-btn {
+    background-color: #ced4da;
+}
+

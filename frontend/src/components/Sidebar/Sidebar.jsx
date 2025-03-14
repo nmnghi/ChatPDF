@@ -115,7 +115,7 @@ const Sidebar = ({ updateChatHistory, updateCurrentThread }) => {
                   e.stopPropagation();
                   handleDeleteThread(thread.threadId);
                 }}>
-                  <img src={assets.trash_icon} alt=""/>
+                  <button id='trash-btn' className="material-symbols-outlined">delete</button>
                 </div>
               </div>
             ))}
