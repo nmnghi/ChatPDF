@@ -11,7 +11,7 @@ import { Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
-import TextareAutosize from 'react-textarea-autosize'
+import TextareaAutosize from 'react-textarea-autosize'
 
 
 const Window = () => {
@@ -174,10 +174,11 @@ const Window = () => {
     fileInputRef.current.click();
   }
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
+      await uploadFile(selectedFile);
       let reader = new FileReader();
       reader.readAsDataURL(selectedFile);
       reader.onloadend = (e) => {
@@ -360,7 +361,7 @@ const Window = () => {
           <div className='prompt-container'>
             <div className='prompt-wrapper'>
               <div className='prompt-search'>
-                <TextareAutosize
+                <TextareaAutosize
                   className='prompt-input'
                   minRows={1}
                   maxRows={7}
