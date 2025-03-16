@@ -21,12 +21,12 @@
     margin-top: 10px;
     display: inline-flex;
     align-items: center;
-    width: 150px;
+    width: 100%;
     gap: 10px;
     height: 40px;
     padding: 10px 15px;
     background-color: #E3E9EE;
-    border-radius: 50px;
+    border-radius: 10px;
     font-size: 14px;
     color: black;
     cursor: pointer;
@@ -51,7 +51,8 @@
     padding: 22px;
     height: 40px;
     margin-top: 5px;
-    border-radius: 30px;
+    border-radius: 10px;
+    width: 100%;
     color: #282828;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
