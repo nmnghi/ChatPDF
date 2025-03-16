@@ -3,31 +3,24 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../../../firebase.config';
 import { assets } from '../../assets/assets';
 import Avatar from '../../assets/chatpdf_avatar.json';
+import TextareaAutosize from 'react-textarea-autosize'
 import Sidebar from '../Sidebar/Sidebar';
 import Help from '../Help/Help';
 import Lottie from 'lottie-react';
 import './Window.css';
-import { Worker } from '@react-pdf-viewer/core';
-import { Viewer } from '@react-pdf-viewer/core';
-import '@react-pdf-viewer/core/lib/styles/index.css';
-import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
-import '@react-pdf-viewer/default-layout/lib/styles/index.css';
-import TextareaAutosize from 'react-textarea-autosize'
-
 
 const Window = () => {
   const [input, setInput] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [file, setFile] = useState(null);
-  const [pdf, setPdf] = useState(null);
   const fileInputRef = useRef(null);
   const [currentThread, setCurrentThread] = useState(null);
   const [userId, setUserId] = useState(null);
   const [currentPdfName, setCurrentPdfName] = useState(null);
   const [showPdfList, setShowPdfList] = useState(false);
   const [userPdfs, setUserPdfs] = useState([]);
-  const defaultLayoutPluginInstance = defaultLayoutPlugin();
   const [showHelp, setShowHelp] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -52,11 +45,10 @@ const Window = () => {
           });
           
           const pdfInfo = await pdfInfoResponse.json();
-          if (pdfInfo.filename) {
+          if (pdfInfo.filename)
             setCurrentPdfName(pdfInfo.filename);
-          } else {
-            setCurrentPdfName(null);
-          }
+          else
+            setCurrentPdfName(null)
         } catch (error) {
           console.error("Error loading document for thread:", error);
         }
@@ -66,10 +58,11 @@ const Window = () => {
     loadPDFTitle();
   }, [currentThread]);
 
-  const createMsgElement = (content, type) => ({
+  const createMsgElement = (content, type, loading = false) => ({
     id: Date.now(),
     type,
-    content
+    content,
+    loading
   });
 
   const adjustPromptSearchHeight = () => {
@@ -98,17 +91,16 @@ const Window = () => {
     return new Promise((resolve) => {
       let index = 0;
       let typingMessage = "";
-  
+
       const interval = setInterval(() => {
         if (index < text.length) {
           typingMessage += text[index];
           index++;
         } else {
           clearInterval(interval);
-          console.log(chatHistory);
           resolve();
         }
-  
+
         setChatHistory((prevMessages) => {
           const updatedMessages = [...prevMessages];
           updatedMessages[updatedMessages.length - 1] = createMsgElement(typingMessage, "bot");
@@ -155,20 +147,34 @@ const Window = () => {
     setChatHistory((prevMessages) => [...prevMessages, userMsg]);
 
     try {
+      setIsLoading(true);
+      const loadingMsg = createMsgElement("", 'bot', true);
+      setChatHistory((prevMessages) => [...prevMessages, loadingMsg]);
+      
       const botResponse = await sendMessage();
+      
+      setIsLoading(false);
       if (botResponse) {
-        const botMsg = createMsgElement(botResponse, 'bot');
-        typingEffect(botResponse, 15);
         setChatHistory((prevMessages) => {
-          const updatedHistory = [...prevMessages, botMsg];
+          const filteredMessages = prevMessages.filter(msg => !msg.loading);
+          const botMsg = createMsgElement(botResponse, 'bot');
+          const updatedHistory = [...filteredMessages, botMsg];
           updateThreadContent(updatedHistory);
+          typingEffect(botResponse, 15);
           return updatedHistory;
         });
       } else {
         console.error('Bot response is undefined or null');
+        setChatHistory((prevMessages) => 
+          prevMessages.filter(msg => !msg.loading)
+        );
       }
     } catch (error) {
       console.error('Error sending message:', error);
+      setIsLoading(false);
+      setChatHistory((prevMessages) => 
+        prevMessages.filter(msg => !msg.loading)
+      );
     }
   }
 
@@ -181,11 +187,7 @@ const Window = () => {
     if (selectedFile) {
       setFile(selectedFile);
       await uploadFile(selectedFile);
-      let reader = new FileReader();
-      reader.readAsDataURL(selectedFile);
-      reader.onloadend = (e) => {
-        setPdf(e.target.result);
-      }
+      setCurrentPdfName(selectedFile.name);
     }
   };
 
@@ -240,8 +242,6 @@ const Window = () => {
 
   const updateCurrentThread = (threadId) => {
     setCurrentThread(threadId);
-    // Clear current PDF name until we fetch the new one
-    setCurrentPdfName(null);
   }
 
   const updateThreadContent = async (updatedHistory) => {
@@ -346,86 +346,84 @@ const Window = () => {
         {showHelp ? 
         (<Help/>
         ) : (
-        <div className="main-container">
-          {/* <div className="pdf-container">
-              <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-                {pdf && <Viewer fileUrl={pdf} plugins={[defaultLayoutPluginInstance]} />}
-              </Worker>
-          </div> */}
-          <div className="chats-container">
-            {chatHistory.map((msg, index) => (
-              <div key={index} className={`message ${msg.type}-message ${msg.type === "bot" ? "loading" : ""}`}>
-                {msg.type === "bot" ? (
-                  <>
-                    <Lottie className="avatar" animationData={Avatar} />
-                    <p className="message-text">{msg.content || "Loading..."}</p>
-                  </>
-                ) : (
-                  <p className="message-text">{msg.content}</p>
-                )}
-              </div>
-            ))}
-          </div>
-
-          <div className='prompt-container'>
-            <div className='prompt-wrapper'>
-              <div className='prompt-search'>
-                <TextareaAutosize
-                  className='prompt-input'
-                  minRows={1}
-                  maxRows={7}
-                  value={input}
-                  onChange={(e) => {
-                    setInput(e.target.value)
-                    adjustPromptSearchHeight()
-                  }}
-                  // onKeyDown={handleKeyDown}
-                  placeholder={currentPdfName ? 'Ask anything about this file' : 'Upload a PDF file first'}
-                  required
-                  style={{ resize: 'none' }}
-                />
-                <div className='prompt-actions'>
-                  <div className="left-actions">
-                    <button id='theme-toggle-btn' className="material-symbols-outlined">light_mode</button>
-                    <button id='delete-btn' className="material-symbols-outlined" onClick={onHandleDelete}>delete</button>
+          <div className="main-container">
+              <div className="chats-container">
+                {chatHistory.map((msg, index) => (
+                  <div key={index} className={`message ${msg.type}-message`}>
+                    {msg.type === "bot" ? (
+                      <>
+                        <Lottie className="avatar" animationData={Avatar} />
+                        {msg.loading ? (
+                          <div className="loading-animation">
+                            <div className="dot-pulse"></div>
+                          </div>
+                        ) : (
+                          <p className="message-text">{msg.content}</p>
+                        )}
+                      </>
+                    ) : (
+                      <p className="message-text">{msg.content}</p>
+                    )}
                   </div>
-                  <div className="right-actions">
-                    <div>
-                      <button
-                        id='add-file-btn'
-                        className="material-symbols-outlined"
-                        onClick={handleButtonClick}
-                        title={currentPdfName ? "Replace PDF" : "Upload PDF"}
-                      >
-                        attach_file
-                      </button>
-                      <input
-                        type="file"
-                        accept=".pdf"
-                        ref={fileInputRef}
-                        style={{ display: "none" }}
-                        onChange={handleFileChange}
-                      />
+                ))}
+              </div>
+            <div className='prompt-container'>
+                <div className='prompt-wrapper'>
+                  <div className='prompt-search'>
+                    <TextareaAutosize
+                      className='prompt-input'
+                      minRows={1}
+                      maxRows={7}
+                      value={input}
+                      onChange={(e) => {
+                        setInput(e.target.value);
+                        adjustPromptSearchHeight();
+                      } }
+                      onKeyDown={handleKeyDown}
+                      placeholder={currentPdfName ? 'Ask anything about this file' : 'Upload a PDF file first'}
+                      required
+                      style={{ resize: 'none' }} />
+                    <div className='prompt-actions'>
+                      <div className="left-actions">
+                        <button id='theme-toggle-btn' className="material-symbols-outlined">light_mode</button>
+                        <button id='delete-btn' className="material-symbols-outlined" onClick={onHandleDelete}>delete</button>
+                      </div>
+                      <div className="right-actions">
+                        <div>
+                          <button
+                            id='add-file-btn'
+                            className="material-symbols-outlined"
+                            onClick={handleButtonClick}
+                            title={currentPdfName ? "Replace PDF" : "Upload PDF"}
+                          >
+                            attach_file
+                          </button>
+                          <input
+                            type="file"
+                            accept=".pdf"
+                            ref={fileInputRef}
+                            style={{ display: "none" }}
+                            onChange={handleFileChange} />
+                        </div>
+                        <button
+                          id='send-btn'
+                          className="material-symbols-outlined"
+                          onClick={onHandleSubmit}
+                        >
+                          send
+                        </button>
+                      </div>
                     </div>
-                    <button
-                      id='send-btn'
-                      className="material-symbols-outlined"
-                      onClick={onHandleSubmit}
-                    >
-                      send
-                    </button>
                   </div>
                 </div>
+
+                <p className='bottom-info'>
+                  {currentPdfName
+                    ? `Current PDF: ${currentPdfName}`
+                    : "Please upload a PDF document to start chatting"}
+                </p>
               </div>
             </div>
-
-            <p className='bottom-info'>
-              {currentPdfName 
-                ? `Current PDF: ${currentPdfName}`
-                : "Please upload a PDF document to start chatting"}
-            </p> 
-          </div>
-        </div>
         )}
       </div>
     </>
