@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import './Sidebar.css'
 import { signOut } from 'firebase/auth';
 
-const Sidebar = ({ updateChatHistory, updateCurrentThread }) => {
-  const [threads, setThreads] = useState([]);
+const Sidebar = ({ updateChatHistory, updateCurrentThread, onHelpClick }) => {
+  const [threads, setThreads] = useState([]);   
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -122,7 +122,7 @@ const Sidebar = ({ updateChatHistory, updateCurrentThread }) => {
         </div>
       </div>
       <div className="bottom">
-        <div className="bottom-item">
+        <div className="bottom-item" onClick={onHelpClick}>
           <button id='help-btn' className="material-symbols-outlined">help</button>
           <p>Help</p>
         </div>
