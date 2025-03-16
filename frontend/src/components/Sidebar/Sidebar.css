@@ -1,10 +1,16 @@
 .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
     min-height: 100vh;
+    width: 250px;
     display: inline-flex;
     flex-direction: column;
     justify-content: space-between;
     background-color: #F3F5F8;
     padding: 25px 15px;
+    overflow-y: auto;
 }
 
 .sidebar img {
@@ -26,7 +32,7 @@
     height: 40px;
     padding: 10px 15px;
     background-color: #E3E9EE;
-    border-radius: 50px;
+    border-radius: 10px;
     font-size: 14px;
     color: black;
     cursor: pointer;
@@ -51,7 +57,7 @@
     padding: 22px;
     height: 40px;
     margin-top: 5px;
-    border-radius: 30px;
+    border-radius: 10px;
     color: #282828;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
@@ -85,7 +91,7 @@
     align-items: center;
     gap: 5px;
     padding: 4px;
-    border-radius: 50px;
+    border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s;
 }

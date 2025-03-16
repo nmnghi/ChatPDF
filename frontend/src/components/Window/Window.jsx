@@ -4,6 +4,7 @@ import { auth, db } from '../../../firebase.config';
 import { assets } from '../../assets/assets';
 import Avatar from '../../assets/chatpdf_avatar.json';
 import Sidebar from '../Sidebar/Sidebar';
+import Help from '../Help/Help';
 import Lottie from 'lottie-react';
 import './Window.css';
 import { Worker } from '@react-pdf-viewer/core';
@@ -25,7 +26,8 @@ const Window = () => {
   const [currentPdfName, setCurrentPdfName] = useState(null);
   const [showPdfList, setShowPdfList] = useState(false);
   const [userPdfs, setUserPdfs] = useState([]);
-  const defaultLayoutPluginInstance = defaultLayoutPlugin();    
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
+  const [showHelp, setShowHelp] = useState(false); 
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -283,10 +285,14 @@ const Window = () => {
     }
   };
 
+  const handleHelpClick = () => {
+    setShowHelp(prev => !prev);
+  }
+
   return (
     <>
       <div>
-        <Sidebar updateChatHistory={updateChatHistory} updateCurrentThread={updateCurrentThread} />
+        <Sidebar updateChatHistory={updateChatHistory} updateCurrentThread={updateCurrentThread} onHelpClick={handleHelpClick}/>
       </div>
       <div className='main'>
         <div className="nav">
@@ -337,6 +343,9 @@ const Window = () => {
           </div>
         )}
 
+        {showHelp ? 
+        (<Help/>
+        ) : (
         <div className="main-container">
           {/* <div className="pdf-container">
               <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
@@ -417,6 +426,7 @@ const Window = () => {
             </p> 
           </div>
         </div>
+        )}
       </div>
     </>
   );
