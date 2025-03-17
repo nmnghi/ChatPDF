@@ -424,3 +424,23 @@ button:active,
     opacity: 0.6;
   }
 }
+
+.message-icon {
+  color: #8b8c89;
+  margin-top: 5px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 5px;
+}
+
+.message-icon span {
+  cursor: pointer;
+  font-size: 20px;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.message-icon span:hover {
+  color: black;
+}

@@ -21,6 +21,7 @@ const Window = () => {
   const [userPdfs, setUserPdfs] = useState([]);
   const [showHelp, setShowHelp] = useState(false); 
   const [isLoading, setIsLoading] = useState(false);
+  const textRef = useRef(null);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -61,6 +62,18 @@ const Window = () => {
     content,
     loading
   });
+
+
+  const copyToClipboard = async () => {
+    if (textRef.current) {
+      try {
+        await navigator.clipboard.writeText(textRef.current.textContent);
+        // alert('Đã copy thành công!');
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+  };
 
   const adjustPromptSearchHeight = () => {
     const promptSearch = document.querySelector('.prompt-search');
@@ -355,7 +368,16 @@ const Window = () => {
                             <div className="dot-pulse"></div>
                           </div>
                         ) : (
-                          <p className="message-text">{msg.content}</p>
+                          <div>
+                            <p ref={textRef} className="message-text">{msg.content}</p>
+                            <div className="message-icon">
+                              <span className="material-symbols-outlined" onClick={copyToClipboard}>content_copy</span>
+                              <span className="material-symbols-outlined">thumb_up</span>
+                              <span className="material-symbols-outlined">thumb_down</span>
+                              <span className="material-symbols-outlined">refresh</span>
+                            </div>
+                          </div>
+
                         )}
                       </>
                     ) : (
