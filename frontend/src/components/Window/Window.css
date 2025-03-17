@@ -9,7 +9,6 @@
   max-height: 70vh;
   max-width: 900px;
   margin: auto;
-  margin-top: 10px;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -20,27 +19,24 @@
   justify-content: space-between;
   font-size: 22px;
   height: 60px;
-  padding: 15px;
+  padding: 20px;
   color: #585858;
   font-weight: 500;
   border-bottom: 1px solid #E3E9EE;  
 }
 
 .nav-left {
-  position: absolute;
-  left: 275px;
+  font-size: 20px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
   gap: 20px;
-  font-size: 18px;
-  font-weight: 510;
 }
 
 .nav-right {
-  position: absolute;
-  right: 20px;
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-right: 18px;
 }
 
 .pdf-list-btn {
@@ -139,13 +135,13 @@
 .close-btn:hover {
   color: #333;
 }
+
 .current-pdf {
-  position: absolute;
   bottom: 2px;
   top: 2px;
   left: 80px;
   display: flex;
-  align-items: center;
+  flex-direction: row;
   gap: 5px;
   background: #F3F5F8;
   padding: 5px 12px;
@@ -176,7 +172,6 @@
 .main .chats-container {
   display: flex;
   gap: 20px;
-  padding-bottom: 50px;
   flex-direction: column;
 }
 
@@ -261,10 +256,6 @@
   gap: 5px;
   height: 56px;
   align-items: center;
-}
-
-.prompt-wrapper {
-  margin-bottom: 50px;
 }
 
 .prompt-search #send-btn {

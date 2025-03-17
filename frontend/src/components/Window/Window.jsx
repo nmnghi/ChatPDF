@@ -45,10 +45,7 @@ const Window = () => {
           });
           
           const pdfInfo = await pdfInfoResponse.json();
-          if (pdfInfo.filename)
-            setCurrentPdfName(pdfInfo.filename);
-          else
-            setCurrentPdfName(null)
+          setCurrentPdfName(pdfInfo.filename);
         } catch (error) {
           console.error("Error loading document for thread:", error);
         }
@@ -418,9 +415,7 @@ const Window = () => {
                 </div>
 
                 <p className='bottom-info'>
-                  {currentPdfName
-                    ? `Current PDF: ${currentPdfName}`
-                    : "Please upload a PDF document to start chatting"}
+                  ChatPDF can make mistakes. Please check the information provided.
                 </p>
               </div>
             </div>
