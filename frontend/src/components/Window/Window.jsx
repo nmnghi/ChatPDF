@@ -8,6 +8,7 @@ import Sidebar from '../Sidebar/Sidebar';
 import Help from '../Help/Help';
 import Lottie from 'lottie-react';
 import './Window.css';
+import { marked } from "marked";
 
 const Window = () => {
   const [input, setInput] = useState("");
@@ -63,6 +64,7 @@ const Window = () => {
     loading
   });
 
+  
 
   const copyToClipboard = async () => {
     if (textRef.current) {
@@ -73,6 +75,20 @@ const Window = () => {
         alert(err.message);
       }
     }
+  };
+
+  const formatMarkdownToHTML = (response) => {
+    let responseArray = response.split("**");
+    let newResponse = "";  
+    
+    for (let i = 0; i < responseArray.length; i++) {
+      if (i % 2 === 0) { 
+        newResponse += responseArray[i]; 
+      } else { 
+        newResponse += `<b>${responseArray[i]}</b>`;
+      }
+    }
+    return marked(newResponse); 
   };
 
   const adjustPromptSearchHeight = () => {
@@ -135,7 +151,10 @@ const Window = () => {
         body: formData,
       });
       const data = await res.json();
-      return data.response.replace(/\*\*([^*]+)\*\*/g, "$1");
+      const response = data.response;
+      const htmlContent = formatMarkdownToHTML(response);
+      return htmlContent;
+      // return data.response.replace(/\*\*([^*]+)\*\*/g, "$1");
     } catch (error) {
       console.error("Error fetching response:", error);
       return "Sorry, I encountered an error processing your request.";
@@ -369,7 +388,12 @@ const Window = () => {
                           </div>
                         ) : (
                           <div>
-                            <p ref={textRef} className="message-text">{msg.content}</p>
+                            <div 
+                              ref={textRef} 
+                              className="message-text" 
+                              style={{ lineHeight: "1.5" }}
+                              dangerouslySetInnerHTML={{ __html: msg.content }} 
+                            />
                             <div className="message-icon">
                               <span className="material-symbols-outlined" onClick={copyToClipboard}>content_copy</span>
                               <span className="material-symbols-outlined">thumb_up</span>
@@ -377,7 +401,6 @@ const Window = () => {
                               <span className="material-symbols-outlined">refresh</span>
                             </div>
                           </div>
-
                         )}
                       </>
                     ) : (
