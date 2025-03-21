@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import './Sidebar.css'
 import { signOut } from 'firebase/auth';
 
-const Sidebar = ({ updateChatHistory, updateCurrentThread, onHelpClick }) => {
+const Sidebar = ({ updateChatHistory, updateCurrentThread, onHelpClick, showResult, setShowResult}) => {
   const [threads, setThreads] = useState([]);   
   const navigate = useNavigate();
 
@@ -30,6 +30,7 @@ const Sidebar = ({ updateChatHistory, updateCurrentThread, onHelpClick }) => {
   }, []);
   
   const createThread = async () => {
+    setShowResult(false);
     const user = auth.currentUser;
     if (user) {
       const userRef = doc(db, 'users', user.uid);

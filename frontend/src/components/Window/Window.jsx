@@ -21,6 +21,7 @@ const Window = () => {
   const [showPdfList, setShowPdfList] = useState(false);
   const [userPdfs, setUserPdfs] = useState([]);
   const [showHelp, setShowHelp] = useState(false); 
+  const [showResult, setShowResult] = useState(false); 
   const [isLoading, setIsLoading] = useState(false);
   const textRef = useRef(null);
 
@@ -163,6 +164,7 @@ const Window = () => {
 
   const onHandleSubmit = async (e) => {
     e.preventDefault();
+    setShowResult(true);
     const userMessage = input.trim();
     if (!userMessage) return;
 
@@ -321,7 +323,7 @@ const Window = () => {
   return (
     <>
       <div>
-        <Sidebar updateChatHistory={updateChatHistory} updateCurrentThread={updateCurrentThread} onHelpClick={handleHelpClick}/>
+        <Sidebar updateChatHistory={updateChatHistory} updateCurrentThread={updateCurrentThread} onHelpClick={handleHelpClick} showResult={showResult} setShowResult={setShowResult}/>
       </div>
       <div className='main'>
         <div className="nav">
@@ -376,6 +378,35 @@ const Window = () => {
         (<Help/>
         ) : (
           <div className="main-container">
+            {!showResult ?
+            <>
+          <div className="greet">
+            <p><span>Hello, Dev.</span></p>
+            <p>How can I help you today?</p>
+          </div>
+          <div className="suggestions">
+            <div className="suggestion-item">
+              <p>What are the key points from my uploaded PDF file?</p>
+              <span className="material-symbols-outlined">star</span>
+            </div>
+
+            <div className="suggestion-item">
+              <p>Can you summarize my document in a clear, concise way?</p>
+              <span className="material-symbols-outlined">lightbulb</span>
+            </div>
+
+            <div className="suggestion-item">
+              <p>Help me find answers to specific questions in my PDF.</p>
+              <span className="material-symbols-outlined">explore</span>
+            </div>
+
+            <div className="suggestion-item">
+              <p>Highlight the most relevant sections of my document.</p>
+              <span className="material-symbols-outlined">draw</span>
+            </div>
+          </div>
+            </>:
+            <>
               <div className="chats-container">
                 {chatHistory.map((msg, index) => (
                   <div key={index} className={`message ${msg.type}-message`}>
@@ -409,6 +440,7 @@ const Window = () => {
                   </div>
                 ))}
               </div>
+            </>}
             <div className='prompt-container'>
                 <div className='prompt-wrapper'>
                   <div className='prompt-search'>
