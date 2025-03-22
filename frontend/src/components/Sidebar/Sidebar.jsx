@@ -28,6 +28,35 @@ const Sidebar = ({ updateChatHistory, updateCurrentThread, onHelpClick, showResu
     };
     fetchThreads();
   }, []);
+
+  const handleRenameThread = async (threadId) => {
+    const newTitle = prompt("Enter new name for this chat:");
+    if (!newTitle) return;
+  
+    const user = auth.currentUser;
+    if (user) {
+      try {
+        const userRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userRef);
+        
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          const updatedChats = userData.chats.map(chat => 
+            chat.threadId === threadId ? { ...chat, threadTitle: newTitle } : chat
+          );
+  
+          await updateDoc(userRef, { chats: updatedChats });
+  
+          setThreads(updatedChats);
+          
+          console.log('Thread renamed successfully');
+        }
+      } catch (error) {
+        console.error('Error renaming thread:', error);
+      }
+    }
+  };
+  
   
   const createThread = async () => {
     setShowResult(false);
@@ -113,10 +142,38 @@ const Sidebar = ({ updateChatHistory, updateCurrentThread, onHelpClick, showResu
                   <p title={thread.threadTitle}>{thread.threadTitle}</p>
                 </div>
                 <div onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteThread(thread.threadId);
-                }}>
-                  <button id='trash-btn' className="material-symbols-outlined">delete</button>
+                    e.stopPropagation();
+                    handleDeleteThread(thread.threadId);
+                  }}>
+                  <div className="actions">
+                    <button id='menu-btn' className="material-symbols-outlined" onClick={(e) => {
+                    e.stopPropagation();
+                    const dropdown = e.currentTarget.nextSibling;
+                    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                    }}>
+                    more_horiz
+                    </button>
+
+                    <div className="dropdown">
+                      <div className="edit-btn"
+                        onClick={(e) => {
+                        e.stopPropagation();
+                        handleRenameThread(thread.threadId);
+                        }}
+                      >
+                        <span className="material-symbols-outlined pdf-icon">edit</span>
+                        <p>Rename</p>
+                      </div>
+                      <div className="delete-btn" 
+                        onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteThread(thread.threadId);
+                        }}>
+                        <span className="material-symbols-outlined pdf-icon">delete</span>
+                        <p>Delete</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}

@@ -453,7 +453,7 @@ const Window = () => {
                         setInput(e.target.value);
                         adjustPromptSearchHeight();
                       } }
-                      onKeyDown={handleKeyDown}
+                      // onKeyDown={handleKeyDown}
                       placeholder={currentPdfName ? 'Ask anything about this file' : 'Upload a PDF file first'}
                       required
                       style={{ resize: 'none' }} />

@@ -109,8 +109,7 @@
 #help-btn,
 #history-btn,
 #settings-btn,
-#logout-btn,
-#trash-btn {
+#logout-btn {
     background-color: #F3F5F8;
 }
 
@@ -126,7 +125,66 @@
     background-color: #ced4da;
 }
 
-.recent-entry:hover #trash-btn {
+.recent-entry:hover #menu-btn {
     background-color: #ced4da;
 }
 
+.actions {
+    position: relative;
+}
+
+#menu-btn {
+    background-color: #F3F5F8;
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    min-width: 120px;
+    z-index: 10;
+}
+
+.dropdown .edit-btn p {
+    padding: 8px 12px;
+    margin: 0;
+    cursor: pointer;
+    color: black;
+    transition: background-color 0.2s;
+}
+
+.dropdown .delete-btn p {
+    padding: 8px 12px;
+    margin: 0;
+    cursor: pointer;
+    color: red;
+    transition: background-color 0.2s;
+}
+
+.edit-btn {
+    display: inline-block;
+}
+
+.delete-btn span {
+    color: red
+}
+
+.edit-btn span {
+    color: black
+}
+
+.edit-btn, .delete-btn {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.edit-btn span, .delete-btn span {
+    margin-right: 8px;
+}
