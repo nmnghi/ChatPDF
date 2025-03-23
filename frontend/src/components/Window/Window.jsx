@@ -20,8 +20,7 @@ const Window = () => {
   const [currentPdfName, setCurrentPdfName] = useState(null);
   const [showPdfList, setShowPdfList] = useState(false);
   const [userPdfs, setUserPdfs] = useState([]);
-  const [showHelp, setShowHelp] = useState(false); 
-  const [showResult, setShowResult] = useState(false); 
+  const [showHelp, setShowHelp] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const textRef = useRef(null);
 
@@ -31,7 +30,7 @@ const Window = () => {
         setUserId(user.uid);
       }
     });
-    
+
     return () => unsubscribe();
   }, []);
 
@@ -41,12 +40,12 @@ const Window = () => {
         try {
           const pdfInfoFormData = new FormData();
           pdfInfoFormData.append("thread_id", currentThread);
-          
+
           const pdfInfoResponse = await fetch("http://127.0.0.1:8000/pdf_info", {
             method: "POST",
             body: pdfInfoFormData,
           });
-          
+
           const pdfInfo = await pdfInfoResponse.json();
           setCurrentPdfName(pdfInfo.filename);
         } catch (error) {
@@ -54,7 +53,7 @@ const Window = () => {
         }
       }
     };
-    
+
     loadPDFTitle();
   }, [currentThread]);
 
@@ -64,8 +63,6 @@ const Window = () => {
     content,
     loading
   });
-
-  
 
   const copyToClipboard = async () => {
     if (textRef.current) {
@@ -80,27 +77,27 @@ const Window = () => {
 
   const formatMarkdownToHTML = (response) => {
     let responseArray = response.split("**");
-    let newResponse = "";  
-    
+    let newResponse = "";
+
     for (let i = 0; i < responseArray.length; i++) {
-      if (i % 2 === 0) { 
-        newResponse += responseArray[i]; 
-      } else { 
+      if (i % 2 === 0) {
+        newResponse += responseArray[i];
+      } else {
         newResponse += `<b>${responseArray[i]}</b>`;
       }
     }
-    return marked(newResponse); 
+    return marked(newResponse);
   };
 
   const adjustPromptSearchHeight = () => {
     const promptSearch = document.querySelector('.prompt-search');
     const textarea = document.querySelector('.prompt-input');
-  
+
     if (promptSearch && textarea) {
       const newHeight = textarea.scrollHeight;
       const maxHeight = 260;
-      const initialHeight = 130; 
-  
+      const initialHeight = 130;
+
       if (textarea.value.trim() === "") {
         promptSearch.style.height = `${initialHeight}px`;
         promptSearch.style.overflowY = 'hidden';
@@ -113,7 +110,7 @@ const Window = () => {
       }
     }
   };
-  
+
   const typingEffect = (text, delay) => {
     return new Promise((resolve) => {
       let index = 0;
@@ -142,11 +139,11 @@ const Window = () => {
       if (!currentThread) {
         return "Please select or create a conversation first.";
       }
-      
+
       const formData = new FormData();
       formData.append("msg", input);
       formData.append("thread_id", currentThread);
-      
+
       const res = await fetch("http://127.0.0.1:8000/response", {
         method: "POST",
         body: formData,
@@ -164,7 +161,6 @@ const Window = () => {
 
   const onHandleSubmit = async (e) => {
     e.preventDefault();
-    setShowResult(true);
     const userMessage = input.trim();
     if (!userMessage) return;
 
@@ -181,9 +177,9 @@ const Window = () => {
       setIsLoading(true);
       const loadingMsg = createMsgElement("", 'bot', true);
       setChatHistory((prevMessages) => [...prevMessages, loadingMsg]);
-      
+
       const botResponse = await sendMessage();
-      
+
       setIsLoading(false);
       if (botResponse) {
         setChatHistory((prevMessages) => {
@@ -196,14 +192,14 @@ const Window = () => {
         });
       } else {
         console.error('Bot response is undefined or null');
-        setChatHistory((prevMessages) => 
+        setChatHistory((prevMessages) =>
           prevMessages.filter(msg => !msg.loading)
         );
       }
     } catch (error) {
       console.error('Error sending message:', error);
       setIsLoading(false);
-      setChatHistory((prevMessages) => 
+      setChatHistory((prevMessages) =>
         prevMessages.filter(msg => !msg.loading)
       );
     }
@@ -233,17 +229,17 @@ const Window = () => {
       formData.append("file", file);
       formData.append("thread_id", currentThread);
       formData.append("user_id", userId);
-      
+
       const res = await fetch("http://127.0.0.1:8000/upload", {
         method: "POST",
         body: formData,
       });
       const data = await res.json();
-      
+
       if (data.filename) {
         setCurrentPdfName(data.filename);
       }
-      
+
       alert(data.message);
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -253,7 +249,7 @@ const Window = () => {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault(); 
+      e.preventDefault();
       onHandleSubmit(e);
     }
   }
@@ -276,13 +272,13 @@ const Window = () => {
   }
 
   const updateThreadContent = async (updatedHistory) => {
-    if (!currentThread){
+    if (!currentThread) {
       console.log("No thread selected");
       return;
     }
     console.log("Updating thread content...");
     const threadRef = doc(db, 'threads', currentThread)
-    try{
+    try {
       await updateDoc(threadRef, {
         contents: updatedHistory
       });
@@ -294,17 +290,17 @@ const Window = () => {
 
   const togglePdfList = async () => {
     setShowPdfList(!showPdfList);
-    
+
     if (!showPdfList && userId) {
       try {
         const formData = new FormData();
         formData.append("user_id", userId);
-        
+
         const response = await fetch("http://127.0.0.1:8000/user_pdfs", {
           method: "POST",
           body: formData,
         });
-        
+
         const data = await response.json();
         if (data.pdfs) {
           setUserPdfs(data.pdfs);
@@ -323,7 +319,7 @@ const Window = () => {
   return (
     <>
       <div>
-        <Sidebar updateChatHistory={updateChatHistory} updateCurrentThread={updateCurrentThread} onHelpClick={handleHelpClick} showResult={showResult} setShowResult={setShowResult}/>
+        <Sidebar updateChatHistory={updateChatHistory} updateCurrentThread={updateCurrentThread} onHelpClick={handleHelpClick} />
       </div>
       <div className='main'>
         <div className="nav">
@@ -337,8 +333,8 @@ const Window = () => {
             )}
           </div>
           <div className="nav-right">
-            <button 
-              className="pdf-list-btn material-symbols-outlined" 
+            <button
+              className="pdf-list-btn material-symbols-outlined"
               onClick={togglePdfList}
               title="My PDFs"
             >
@@ -374,39 +370,10 @@ const Window = () => {
           </div>
         )}
 
-        {showHelp ? 
-        (<Help/>
-        ) : (
-          <div className="main-container">
-            {!showResult ?
-            <>
-          <div className="greet">
-            <p><span>Hello, Dev.</span></p>
-            <p>How can I help you today?</p>
-          </div>
-          <div className="suggestions">
-            <div className="suggestion-item">
-              <p>What are the key points from my uploaded PDF file?</p>
-              <span className="material-symbols-outlined">star</span>
-            </div>
-
-            <div className="suggestion-item">
-              <p>Can you summarize my document in a clear, concise way?</p>
-              <span className="material-symbols-outlined">lightbulb</span>
-            </div>
-
-            <div className="suggestion-item">
-              <p>Help me find answers to specific questions in my PDF.</p>
-              <span className="material-symbols-outlined">explore</span>
-            </div>
-
-            <div className="suggestion-item">
-              <p>Highlight the most relevant sections of my document.</p>
-              <span className="material-symbols-outlined">draw</span>
-            </div>
-          </div>
-            </>:
-            <>
+        {showHelp ?
+          (<Help />
+          ) : (
+            <div className="main-container">
               <div className="chats-container">
                 {chatHistory.map((msg, index) => (
                   <div key={index} className={`message ${msg.type}-message`}>
@@ -419,11 +386,11 @@ const Window = () => {
                           </div>
                         ) : (
                           <div>
-                            <div 
-                              ref={textRef} 
-                              className="message-text" 
+                            <div
+                              ref={textRef}
+                              className="message-text"
                               style={{ lineHeight: "1.5" }}
-                              dangerouslySetInnerHTML={{ __html: msg.content }} 
+                              dangerouslySetInnerHTML={{ __html: msg.content }}
                             />
                             <div className="message-icon">
                               <span className="material-symbols-outlined" onClick={copyToClipboard}>content_copy</span>
@@ -440,8 +407,7 @@ const Window = () => {
                   </div>
                 ))}
               </div>
-            </>}
-            <div className='prompt-container'>
+              <div className='prompt-container'>
                 <div className='prompt-wrapper'>
                   <div className='prompt-search'>
                     <TextareaAutosize
@@ -452,8 +418,8 @@ const Window = () => {
                       onChange={(e) => {
                         setInput(e.target.value);
                         adjustPromptSearchHeight();
-                      } }
-                      // onKeyDown={handleKeyDown}
+                      }}
+                      onKeyDown={handleKeyDown}
                       placeholder={currentPdfName ? 'Ask anything about this file' : 'Upload a PDF file first'}
                       required
                       style={{ resize: 'none' }} />
@@ -496,7 +462,7 @@ const Window = () => {
                 </p>
               </div>
             </div>
-        )}
+          )}
       </div>
     </>
   );
