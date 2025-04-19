@@ -228,7 +228,7 @@ def get_chat_response(text: str, thread_id: str, top_k: int):
             return "Please upload a PDF document first."
 
         vector_store = active_vector_stores[thread_id]
-        chunks_query_retriever = vector_store.as_retriever(search_kwargs={"k": top_k})
+        chunks_query_retriever = vector_store.as_retriever(search_kwargs={"k": top_k, "score_threshold": 0.75})
 
         related_chunks = chunks_query_retriever.get_relevant_documents(text)
         answer = "\n\n".join([chunk.page_content for chunk in related_chunks])
