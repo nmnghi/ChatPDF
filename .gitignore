@@ -1,9 +1,5 @@
 __pycache__
-# experimental
-# uploads
 .env
 node_modules
 firebase.config.js
 .DS_store
-# vector_stores
-# evaluation
